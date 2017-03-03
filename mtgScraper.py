@@ -1,3 +1,8 @@
+# git add -A
+# git commit -m "comments"
+# git push origin master
+
+
 from bs4 import BeautifulSoup as bs
 import urllib.request
 
@@ -13,13 +18,13 @@ class Deck(object):
 		self.cards = []
 		self.mainBoard = []
 		self.sideBoard = []
-		# self.creatures = []
-		# self.instants = []
-		# self.sorceries = []
-		# self.planeswalkers = []
-		# self.artifacts = []
-		# self.enchantments = []
-		# self.lands = []
+		self.creatures = []
+		self.instants = []
+		self.sorceries = []
+		self.planeswalkers = []
+		self.artifacts = []
+		self.enchantments = []
+		self.lands = []
 
 	def getDeckName(self):
 		return self.deckName
@@ -36,26 +41,26 @@ class Deck(object):
 	def getSB(self):
 		return self.sideBoard
 
-	# def getCreatures(self):
-	# 	return self.creatures
+	def getCreatures(self):
+		return self.creatures
 
-	# def getInstants(self):
-	# 	return self.instants
+	def getInstants(self):
+	 	return self.instants
 
-	# def getSorceries(self):
-	# 	return self.sorceries
+	def getSorceries(self):
+	 	return self.sorceries
 
-	# def getPlainswalkers(self):
-	# 	return self.planeswalkers
+	def getPlainswalkers(self):
+		return self.planeswalkers
 
-	# def getArtifacts(self):
-	# 	return self.artifacts
+	def getArtifacts(self):
+		return self.artifacts
 
-	# def getEnchanments(self):
-	# 	return self.enchantments
+	def getEnchanments(self):
+		return self.enchantments
 
-	# def getLands(self):
-	# 	return self.lands
+	def getLands(self):
+		return self.lands
 
 
 #Dictionary of known decks
@@ -94,48 +99,127 @@ deckNames = {"Afinity": ["Mox Opal", "Darksteel Citadel", "Arcbound Ravager", "V
              "Living End": ["Deadshot Minotaur", "Living End", "Violent Outburst"]}
 
 
-#for date in range(1)
-url = "http://magic.wizards.com/en/articles/archive/mtgo-standings/competitive-modern-constructed-league-2017-02-22"
-html = urllib.request.urlopen(url)
-soup = bs(html, 'html.parser')
-
+#daysOfMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 allDecks = []
+for date in range(20, 21):
+	url = "http://magic.wizards.com/en/articles/archive/mtgo-standings/competitive-modern-constructed-league-2017-02-" + str(date)
+	html = urllib.request.urlopen(url)
+	soup = bs(html, 'html.parser')
 
-for decklist in soup.find('div', class_='decklists'):
-	oneDeck = Deck()
-	oneDeck.dateWon = "2017-02-22"
-	for mb in decklist.find_all('div', class_='sorted-by-overview-container sortedContainer'):
-		for card in mb.find_all('span', class_='row'):
-			oneCard = Card()
-			cardCount = card.find('span', class_='card-count')
-			cardName = card.find('span', class_='card-name')
-			oneCard.number = cardCount.get_text()
-			oneCard.name = cardName.get_text()
-			oneDeck.cards.append(oneCard)
-			oneDeck.mainBoard.append(oneCard)
-	for sb in decklist.find_all('div', class_='sorted-by-sideboard-container'):
-		for card in sb.find_all('span', class_='row'):
-			oneCard = Card()
-			cardCount = card.find('span', class_='card-count')
-			cardName = card.find('span', class_='card-name')
-			oneCard.number = cardCount.get_text()
-			oneCard.name = cardName.get_text()
-			oneDeck.cards.append(oneCard)
-			oneDeck.sideBoard.append(oneCard)
-	allDecks.append(oneDeck)
+	deckListsWeb = soup.find('div', class_='decklists')
+	if deckListsWeb:
+		for decklist in deckListsWeb:
+			oneDeck = Deck()
+			oneDeck.dateWon = "2017-02-" + str(date)
+			for mb in decklist.find_all('div', class_='sorted-by-overview-container sortedContainer'):
+				for card in mb.find_all('span', class_='row'):
+					oneCard = Card()
+					cardCount = card.find('span', class_='card-count')
+					cardName = card.find('span', class_='card-name')
+					oneCard.number = cardCount.get_text()
+					oneCard.name = cardName.get_text()
+					oneDeck.cards.append(oneCard)
+					oneDeck.mainBoard.append(oneCard)
+
+				creatureList = mb.find('div', class_='sorted-by-creature clearfix element')
+				if creatureList:
+					for card in creatureList.find_all('span', class_='row'):
+						oneCard = Card()
+						cardCount = card.find('span', class_='card-count')
+						cardName = card.find('span', class_='card-name')
+						oneCard.number = cardCount.get_text()
+						oneCard.name = cardName.get_text()
+						oneDeck.creatures.append(oneCard)
+
+				instantsList = mb.find('div', class_='sorted-by-instant clearfix element')
+				if instantsList:
+					for card in instantsList.find_all('span', class_='row'):
+						oneCard = Card()
+						cardCount = card.find('span', class_='card-count')
+						cardName = card.find('span', class_='card-name')
+						oneCard.number = cardCount.get_text()
+						oneCard.name = cardName.get_text()
+						oneDeck.instants.append(oneCard)
+
+				sorceriesList = mb.find('div', class_='sorted-by-sorcery clearfix element')
+				if sorceriesList:
+					for card in sorceriesList.find_all('span', class_='row'):
+						oneCard = Card()
+						cardCount = card.find('span', class_='card-count')
+						cardName = card.find('span', class_='card-name')
+						oneCard.number = cardCount.get_text()
+						oneCard.name = cardName.get_text()
+						oneDeck.sorceries.append(oneCard)
+
+				planeswalkersList = mb.find('div', class_='sorted-by-planeswalker clearfix element')
+				if planeswalkersList:
+					for card in planeswalkersList.find_all('span', class_='row'):
+						oneCard = Card()
+						cardCount = card.find('span', class_='card-count')
+						cardName = card.find('span', class_='card-name')
+						oneCard.number = cardCount.get_text()
+						oneCard.name = cardName.get_text()
+						oneDeck.planeswalkers.append(oneCard)
+
+				artifactsList = mb.find('div', class_='sorted-by-artifact clearfix element')
+				if artifactsList:
+					for card in artifactsList.find_all('span', class_='row'):
+						oneCard = Card()
+						cardCount = card.find('span', class_='card-count')
+						cardName = card.find('span', class_='card-name')
+						oneCard.number = cardCount.get_text()
+						oneCard.name = cardName.get_text()
+						oneDeck.artifacts.append(oneCard)
+
+				enchantmentsList = mb.find('div', class_='sorted-by-enchantment clearfix element')
+				if enchantmentsList:
+					for card in enchantmentsList.find_all('span', class_='row'):
+						oneCard = Card()
+						cardCount = card.find('span', class_='card-count')
+						cardName = card.find('span', class_='card-name')
+						oneCard.number = cardCount.get_text()
+						oneCard.name = cardName.get_text()
+						oneDeck.enchantments.append(oneCard)
+
+				landsList = mb.find('div', class_='sorted-by-land clearfix element')
+				if landsList:
+					for card in landsList.find_all('span', class_='row'):
+						oneCard = Card()
+						cardCount = card.find('span', class_='card-count')
+						cardName = card.find('span', class_='card-name')
+						oneCard.number = cardCount.get_text()
+						oneCard.name = cardName.get_text()
+						oneDeck.lands.append(oneCard)
+
+
+			for sb in decklist.find_all('div', class_='sorted-by-sideboard-container'):
+				for card in sb.find_all('span', class_='row'):
+					oneCard = Card()
+					cardCount = card.find('span', class_='card-count')
+					cardName = card.find('span', class_='card-name')
+					oneCard.number = cardCount.get_text()
+					oneCard.name = cardName.get_text()
+					oneDeck.cards.append(oneCard)
+					oneDeck.sideBoard.append(oneCard)
+			allDecks.append(oneDeck)
+
+
 
 for deck in allDecks:
 	print()
 	print("Date Won: ", deck.getDateWon())
 	print ()
-	print ('Next Deck')
-	print ('Main Board')
-	for card in deck.getMB():
-		print (card.name, ' - ', card.number)
-	print ()
-	print ('Sideboard')
-	for card in deck.getSB():
-		print (card.name, ' - ', card.number)
+	print ("Creature List")
+	for creature in deck.getCreatures():
+		print (creature.name, ' - ', creature.number)
+	# print ('Next Deck')
+	# print ('Main Board')
+	# for card in deck.getMB():
+	# 	print (card.name, ' - ', card.number)
+	# print ()
+	# print ('Sideboard')
+	# for card in deck.getSB():
+	# 	print (card.name, ' - ', card.number)
 
 
    
